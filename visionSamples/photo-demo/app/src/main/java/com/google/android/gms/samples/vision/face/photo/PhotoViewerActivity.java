@@ -16,11 +16,14 @@
 package com.google.android.gms.samples.vision.face.photo;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -31,6 +34,7 @@ import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -45,9 +49,41 @@ public class PhotoViewerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_viewer);
 
-        InputStream stream = getResources().openRawResource(R.raw.face);
-        Bitmap bitmap = BitmapFactory.decodeStream(stream);
+        // if this is a share, something happens?
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+        Bitmap bitmap = null;
 
+        if(action.equals(Intent.ACTION_SEND)) {
+
+            Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //bitmap = BitmapFactory.decodeFile(imageUri.getPath());
+        } else {
+
+            // Refactor: this needs to all be a function, input image in TBD format but output is faces.
+            // get faces for image
+            InputStream stream = getResources().openRawResource(R.raw.face);
+
+            // turned into a bitmap image
+            bitmap = BitmapFactory.decodeStream(stream);
+        }
+
+        SparseArray<Face> faces = getFaceSparseArray(getApplicationContext(), bitmap);
+
+        // This is where the results are displayed, image along with annotations.
+        FaceView overlay = (FaceView) findViewById(R.id.faceView);
+        overlay.setContent(bitmap, faces);
+
+    }
+
+    private SparseArray<Face> getFaceSparseArray(Context applicationContext, Bitmap bitmap) {
         // A new face detector is created for detecting the face and its landmarks.
         //
         // Setting "tracking enabled" to false is recommended for detection with unrelated
@@ -58,7 +94,7 @@ public class PhotoViewerActivity extends Activity {
         //
         // By default, landmark detection is not enabled since it increases detection time.  We
         // enable it here in order to visualize detected landmarks.
-        FaceDetector detector = new FaceDetector.Builder(getApplicationContext())
+        FaceDetector detector = new FaceDetector.Builder(applicationContext)
                 .setTrackingEnabled(false)
                 .setLandmarkType(FaceDetector.ALL_LANDMARKS)
                 .build();
@@ -89,16 +125,13 @@ public class PhotoViewerActivity extends Activity {
             boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
 
             if (hasLowStorage) {
-                Toast.makeText(this, R.string.low_storage_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(applicationContext, R.string.low_storage_error, Toast.LENGTH_LONG).show();
                 Log.w(TAG, getString(R.string.low_storage_error));
             }
         }
-
-        FaceView overlay = (FaceView) findViewById(R.id.faceView);
-        overlay.setContent(bitmap, faces);
-
         // Although detector may be used multiple times for different images, it should be released
         // when it is no longer needed in order to free native resources.
         safeDetector.release();
+        return faces;
     }
 }
