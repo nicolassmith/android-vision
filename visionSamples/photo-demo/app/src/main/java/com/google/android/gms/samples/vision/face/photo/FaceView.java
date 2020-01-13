@@ -86,6 +86,9 @@ public class FaceView extends View {
      * pupil position.
      */
     private void drawFaceAnnotations(Canvas canvas, double scale) {
+
+        // NEXT STEP: MUCK THIS UP!!
+
         Paint paint = new Paint();
         paint.setColor(Color.GREEN);
         paint.setStyle(Paint.Style.STROKE);
