@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.android.gms.samples.vision.face.photo;
+package com.gooeyfaze.deface;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.SparseArray;
 
+import com.gooeyfaze.deface.R;
 import com.google.android.gms.vision.face.Face;
 
 import java.io.IOException;
@@ -69,9 +70,19 @@ public class PhotoViewerActivity extends Activity {
         SparseArray<Face> faces = Bitmap2FaceProcessor.getFaceSparseArray(getApplicationContext(), bitmap);
 
         // This is where the results are displayed, image along with annotations.
+
+        // refactor to have canvas stuff here
+
+        // we will create a canvas object
+        // we may make a new bitmap or reuse existing
+        // draw annotations.
+
+        // pass to view for display
+
         FaceView overlay = (FaceView) findViewById(R.id.faceView);
         overlay.setContent(bitmap, faces);
 
+        //also give bitmap to onclick method for button for sharing.
     }
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.android.gms.samples.vision.face.photo;
+package com.gooeyfaze.deface;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -89,18 +89,23 @@ public class FaceView extends View {
 
         // NEXT STEP: MUCK THIS UP!!
 
+
+
+        for (int i = 0; i < mFaces.size(); ++i) {
+            Face face = mFaces.valueAt(i);
+            circleLandmarksForFace(face, canvas, scale);
+        }
+    }
+
+    private void circleLandmarksForFace(Face face, Canvas canvas, double scale) {
         Paint paint = new Paint();
         paint.setColor(Color.GREEN);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5);
-
-        for (int i = 0; i < mFaces.size(); ++i) {
-            Face face = mFaces.valueAt(i);
-            for (Landmark landmark : face.getLandmarks()) {
-                int cx = (int) (landmark.getPosition().x * scale);
-                int cy = (int) (landmark.getPosition().y * scale);
-                canvas.drawCircle(cx, cy, 10, paint);
-            }
+        for (Landmark landmark : face.getLandmarks()) {
+            int cx = (int) (landmark.getPosition().x * scale);
+            int cy = (int) (landmark.getPosition().y * scale);
+            canvas.drawCircle(cx, cy, 10, paint);
         }
     }
 }

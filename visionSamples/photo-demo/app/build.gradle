@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        applicationId "com.google.android.gms.samples.vision.face.photo"
+        applicationId "com.gooeyfaze.deface"
         minSdkVersion 14
         targetSdkVersion 28
         versionCode 1

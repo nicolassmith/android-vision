@@ -1,4 +1,4 @@
-package com.google.android.gms.samples.vision.face.photo;
+package com.gooeyfaze.deface;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +8,8 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
-import com.google.android.gms.samples.vision.face.patch.SafeFaceDetector;
+import com.gooeyfaze.deface.patch.SafeFaceDetector;
+import com.gooeyfaze.deface.R;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
