@@ -51,18 +51,16 @@ public class PhotoViewerActivity extends Activity {
         Bitmap bitmap = null;
 
         if(action.equals(Intent.ACTION_SEND)) {
-
             Uri imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
 
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                bitmap = MediaStore.Images.Media.getBitmap(
+                        this.getContentResolver(), imageUri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-
-            // Refactor: this needs to all be a function, input image in TBD format but output is faces.
-            // get faces for image
+            // Default face image.
             InputStream stream = getResources().openRawResource(R.raw.face);
 
             // turned into a bitmap image
