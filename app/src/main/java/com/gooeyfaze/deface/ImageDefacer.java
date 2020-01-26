@@ -1,6 +1,8 @@
 package com.gooeyfaze.deface;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -10,7 +12,15 @@ import android.util.SparseArray;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.Landmark;
 
+import java.io.InputStream;
+
 public class ImageDefacer {
+    private Context mContext;
+
+    public ImageDefacer(Context context) {
+        mContext = context;
+    }
+
     Bitmap defaceBitmap(Bitmap bitmap, SparseArray<Face> faces) {
         // Copy to mutable bitmap
         Bitmap mutableBitmap = bitmap.copy(bitmap.getConfig(), true);
@@ -28,6 +38,12 @@ public class ImageDefacer {
             Face face = faces.valueAt(i);
             circleLandmarksForFace(face, canvas, 1);
         }
+        InputStream stream = mContext.getResources().openRawResource(R.raw.smiley_640);
+
+        // turned into a bitmap image
+        Bitmap smiley_bitmap = BitmapFactory.decodeStream(stream);
+
+        canvas.drawBitmap(smiley_bitmap, 0, 0, null);
     }
 
     private void circleLandmarksForFace(Face face, Canvas canvas, double scale) {

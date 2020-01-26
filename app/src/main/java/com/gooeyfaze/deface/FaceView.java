@@ -42,7 +42,6 @@ import java.io.IOException;
  */
 public class FaceView extends View {
     private Bitmap mBitmap;
-    private SparseArray<Face> mFaces;
     private Context mContext;
 
     public FaceView(Context context, AttributeSet attrs) {

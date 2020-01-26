@@ -79,14 +79,14 @@ public class PhotoViewerActivity extends Activity {
         // we will create a canvas object
         // we may make a new bitmap or reuse existing
         // draw annotations.
-        ImageDefacer defacer = new ImageDefacer();
+        ImageDefacer defacer = new ImageDefacer(getApplicationContext());
         Bitmap defaced_bitmap = defacer.defaceBitmap(bitmap, faces);
 
         // pass to view for display
 
         FaceView overlay = (FaceView) findViewById(R.id.faceView);
         overlay.setContent(defaced_bitmap);
-        
+
     }
 
 }
