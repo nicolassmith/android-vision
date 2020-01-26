@@ -27,6 +27,8 @@ import android.util.SparseArray;
 import com.gooeyfaze.deface.R;
 import com.google.android.gms.vision.face.Face;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -84,8 +86,7 @@ public class PhotoViewerActivity extends Activity {
 
         FaceView overlay = (FaceView) findViewById(R.id.faceView);
         overlay.setContent(defaced_bitmap);
-
-        //also give bitmap to onclick method for button for sharing.
+        
     }
 
 }

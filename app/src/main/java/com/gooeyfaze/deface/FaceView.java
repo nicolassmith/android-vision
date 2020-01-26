@@ -16,17 +16,25 @@
 package com.gooeyfaze.deface;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
 
+import androidx.core.content.FileProvider;
+
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.Landmark;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * View which displays a bitmap containing a face along with overlay graphics that identify the
@@ -35,9 +43,11 @@ import com.google.android.gms.vision.face.Landmark;
 public class FaceView extends View {
     private Bitmap mBitmap;
     private SparseArray<Face> mFaces;
+    private Context mContext;
 
     public FaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
     }
 
     /**
@@ -45,6 +55,7 @@ public class FaceView extends View {
      */
     void setContent(Bitmap bitmap) {
         mBitmap = bitmap;
+        this.setOnClickListener(mClickToShareListener);
         invalidate();
     }
 
@@ -74,5 +85,34 @@ public class FaceView extends View {
         canvas.drawBitmap(mBitmap, null, destBounds, null);
         return scale;
     }
+
+    private View.OnClickListener mClickToShareListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            try {
+
+                File cachePath = new File(mContext.getCacheDir(), "deface_cache");
+                cachePath.mkdirs(); // don't forget to make the directory
+                FileOutputStream stream = new FileOutputStream(cachePath + "/image.png"); // overwrites this image every time
+                mBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                stream.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            File imagePath = new File(mContext.getCacheDir(), "deface_cache");
+            File newFile = new File(imagePath, "image.png");
+            Uri contentUri = FileProvider.getUriForFile(mContext, "com.gooeyfaze.fileprovider", newFile);
+
+            if (contentUri != null) {
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // temp permission for receiving app to read this file
+                shareIntent.setDataAndType(contentUri, mContext.getContentResolver().getType(contentUri));
+                shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                mContext.startActivity(Intent.createChooser(shareIntent, "Choose an app"));
+            }
+        }
+    };
 
 }
