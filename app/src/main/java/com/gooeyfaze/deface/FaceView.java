@@ -43,9 +43,8 @@ public class FaceView extends View {
     /**
      * Sets the bitmap background and the associated face detections.
      */
-    void setContent(Bitmap bitmap, SparseArray<Face> faces) {
+    void setContent(Bitmap bitmap) {
         mBitmap = bitmap;
-        mFaces = faces;
         invalidate();
     }
 
@@ -55,9 +54,8 @@ public class FaceView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if ((mBitmap != null) && (mFaces != null)) {
+        if (mBitmap != null) {
             double scale = drawBitmap(canvas);
-            drawFaceAnnotations(canvas, scale);
         }
     }
 
@@ -77,35 +75,4 @@ public class FaceView extends View {
         return scale;
     }
 
-    /**
-     * Draws a small circle for each detected landmark, centered at the detected landmark position.
-     * <p>
-     *
-     * Note that eye landmarks are defined to be the midpoint between the detected eye corner
-     * positions, which tends to place the eye landmarks at the lower eyelid rather than at the
-     * pupil position.
-     */
-    private void drawFaceAnnotations(Canvas canvas, double scale) {
-
-        // NEXT STEP: MUCK THIS UP!!
-
-
-
-        for (int i = 0; i < mFaces.size(); ++i) {
-            Face face = mFaces.valueAt(i);
-            circleLandmarksForFace(face, canvas, scale);
-        }
-    }
-
-    private void circleLandmarksForFace(Face face, Canvas canvas, double scale) {
-        Paint paint = new Paint();
-        paint.setColor(Color.GREEN);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5);
-        for (Landmark landmark : face.getLandmarks()) {
-            int cx = (int) (landmark.getPosition().x * scale);
-            int cy = (int) (landmark.getPosition().y * scale);
-            canvas.drawCircle(cx, cy, 10, paint);
-        }
-    }
 }

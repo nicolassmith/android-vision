@@ -67,7 +67,8 @@ public class PhotoViewerActivity extends Activity {
             bitmap = BitmapFactory.decodeStream(stream);
         }
 
-        SparseArray<Face> faces = Bitmap2FaceProcessor.getFaceSparseArray(getApplicationContext(), bitmap);
+        SparseArray<Face> faces = Bitmap2FaceProcessor.getFaceSparseArray(
+                getApplicationContext(), bitmap);
 
         // This is where the results are displayed, image along with annotations.
 
@@ -76,11 +77,13 @@ public class PhotoViewerActivity extends Activity {
         // we will create a canvas object
         // we may make a new bitmap or reuse existing
         // draw annotations.
+        ImageDefacer defacer = new ImageDefacer();
+        Bitmap defaced_bitmap = defacer.defaceBitmap(bitmap, faces);
 
         // pass to view for display
 
         FaceView overlay = (FaceView) findViewById(R.id.faceView);
-        overlay.setContent(bitmap, faces);
+        overlay.setContent(defaced_bitmap);
 
         //also give bitmap to onclick method for button for sharing.
     }
